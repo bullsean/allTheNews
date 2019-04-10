@@ -14,6 +14,20 @@ var app = express();
 
 // Configure middleware
 
+// Handlebars
+var hbHelpers = require("./views/helpers/hbHelpers.js");
+
+app.engine(
+    "handlebars",
+    exphbs({
+      defaultLayout: "main",
+      helpers: {
+        debug: hbHelpers.debug
+      }
+    })
+  );
+  app.set("view engine", "handlebars");
+
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -26,6 +40,10 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines
 mongoose.connect(MONGODB_URI);
 
 // Routes
+
+app.get("/", function(req, res) {
+    res.render("index");
+});
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function(req, res) {
