@@ -37,22 +37,22 @@ app.use(express.static("public"));
 // Connect to the Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // Routes
 
-// app.get("/", function(req, res) {
-//     res.render("index");
-// });
+app.get("/", function(req, res) {
+    res.render("index");
+});
 
 // A GET route for scraping the techcrunch website
-app.get("/", function (req, res) {
+app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://techcrunch.com/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
-    // Now, we grab every h2 within an article tag, and do the following:
+    // Now, we grab every a with a class of post-block__title__link, and do the following:
     $("a.post-block__title__link").each(function(i, element) {
       // Save an empty result object
       var result = {};
@@ -75,7 +75,7 @@ app.get("/", function (req, res) {
         });
     });
 
-    // Send a message to the client
+    // Render the index html with the data included
     res.render("index");
   });
 });
@@ -108,6 +108,7 @@ app.get("/articles/:id", function (req, res) {
       // If an error occurred, send it to the client
       res.json(err);
     });
+    res.render("saved");
 });
 
 // Route for saving/updating an Article's associated Note
