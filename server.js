@@ -41,19 +41,19 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // Routes
 
-app.get("/", function(req, res) {
-    res.render("index");
+app.get("/", function (req, res) {
+  res.render("index");
 });
 
 // A GET route for scraping the techcrunch website
 app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
-  axios.get("https://techcrunch.com/").then(function(response) {
+  axios.get("https://techcrunch.com/").then(function (response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // Now, we grab every a with a class of post-block__title__link, and do the following:
-    $("a.post-block__title__link").each(function(i, element) {
+    $("a.post-block__title__link").each(function (i, element) {
       // Save an empty result object
       var result = {};
 
@@ -94,19 +94,19 @@ app.get("/articles", function (req, res) {
     });
 });
 
-app.get("/saved", function(req, res) {
+app.get("/saved", function (req, res) {
   db.Article.find({ saved: true })
     // ..and populate all of the notes associated with it
     .populate("note")
     .then(function (dbArticle) {
       // If we were able to successfully find an Article with the given id, send it back to the client
-      res.json(dbArticle);
+      console.log(dbArticle);
     })
     .catch(function (err) {
       // If an error occurred, send it to the client
-      res.json(err);
+      console.log(err);
     });
-    
+
   res.render("saved");
 });
 
@@ -130,7 +130,7 @@ app.get("/articles/saved/:id", function (req, res) {
 
 // Route for saving/updating an Article's associated Note
 app.put("/articles/saved/:id", function (req, res) {
-  db.Article.findOneAndUpdate({_id: req.params.id}, {$set: {saved: true}})
+  db.Article.findOneAndUpdate({ _id: req.params.id }, { $set: { saved: true } })
     .then(function (dbArticle) {
       // If we were able to successfully update an Article, send it back to the client
       res.json(dbArticle);

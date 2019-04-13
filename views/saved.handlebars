@@ -1,14 +1,22 @@
-   <header>
-        <h1>This is where the header goes with options to hoem, scrape, go to saved articles</h1>
-    </header>
-    <h1>This is the NYTScraper</h1>
-    <div>
-        Inside this div, create space for saved scraped articles to go.
-        <p>Users will be able to see title, content, link, (image?) and then have the option to add a note or delete the article.</p>
-        Also, create modal that allows users to plug in their notes on an article.
-
-        <div id="notes"></div>
-        
+<nav>
+    <div class="nav-wrapper">
+        <a href="" class="brand-logo right">Tech,Crunch,Scrape</a>
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="/">Home</a></li>
+            <li><a href="/saved">Saved Articles</a></li>
+        </ul>
     </div>
+</nav>
+<h1>This is the NYTScraper</h1>
+<div>
+    <p>Users will be able to see title, content, link, (image?) and then have the option to add a note or delete the
+        article.</p>
+    Also, create modal that allows users to plug in their notes on an article.
+    <div id="articles"></div>
+
     
-    <script src="app.js"></script>
+    <div id="notes"></div>
+
+</div>
+
+<script src="savedApp.js"></script>
