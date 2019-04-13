@@ -44,10 +44,10 @@ $(document).ready(function () {
             .remove();
 
         articleToSave.saved = true;
-        // Using a patch method to be semantic since this is an update to an existing record in our collection
+
         $.ajax({
             method: "PUT",
-            url: "/articles/saved/" + articleToSave._id,
+            url: "/articles/saved/" + articleToSave.id,
             data: articleToSave
         }).then(function (data) {
             // If the data was saved successfully
