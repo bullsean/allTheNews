@@ -5,7 +5,7 @@ $(document).ready(function () {
     $(document).on("click", ".save", articleSave);
 
     function initPage() {
-
+        // Grab the articles as a json
         $.getJSON("/articles", function (data) {
             // For each one
             for (var i = 0; i < data.length; i++) {
@@ -13,9 +13,9 @@ $(document).ready(function () {
                 $("#articles").append(
                     [
                         "<div class='col s12 m12'>",
-                        "<div class='card blue darken-1'>",
+                        "<div class='card blue darken-1' data-id='" + data[i]._id + "'>",
                         "<div class='card-content white-text'>",
-                        "<p class='mainTitle' data-id='" + data[i]._id + "'>" + data[i].title + "</p>",
+                        "<p class='mainTitle'>" + data[i].title + "</p>",
                         "</div>",
                         "<div class='card-action'>",
                         "<a href='" + data[i].link + "'>Check out the article</a><a class='save waves-effect waves-light btn-large'>Save Article</a>",
@@ -33,8 +33,10 @@ $(document).ready(function () {
         // When we rendered the article initially, we attached a javascript object containing the headline id
         // to the element using the .data method. Here we retrieve that.
         var articleToSave = $(this)
-            .parents(".mainTitle")
+            .parents(".card")
             .data();
+
+        console.log(articleToSave)
 
         // Remove card from page
         $(this)
@@ -56,5 +58,5 @@ $(document).ready(function () {
         });
     }
 })
-// Grab the articles as a json
+
 
