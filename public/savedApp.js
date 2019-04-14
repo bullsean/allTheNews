@@ -5,7 +5,9 @@ $(document).ready(function () {
     $('.modal').modal();
 
     $(document).on("click", ".delete", articleDelete);
-    
+    $(document).on("click", ".addNote", articleNotes);
+    $(document).on("click", "#saveNote", saveNote);
+
     function initPage() {
         // Grab the articles as a json
         $.getJSON("/articles", function (data) {
@@ -13,7 +15,7 @@ $(document).ready(function () {
             $('#articles').empty()
             for (var i = 0; i < data.length; i++) {
                 console.log(data[i].saved)
-                if(data[i].saved) {
+                if (data[i].saved) {
                     $("#articles").append(
                         [
                             "<div class='col s12 m12'>",
@@ -66,6 +68,60 @@ $(document).ready(function () {
             }
         });
     }
-})
+
+    function articleNotes() {
+        // Empty the notes from the note section
+        $("#notes").empty();
+        // Save the id from the p tag
+        var articleToSave = $(this)
+            .parents(".card")
+            .data();
+
+        // Now make an ajax call for the Article
+        $.ajax({
+            method: "GET",
+            url: "/articles/saved/" + articleToSave.id
+        })
+            // With that done, add the note information to the page
+            .then(function (data) {
+                // var articleId = data._id
+                console.log(data);
+                $("#articleId").append(data.title);
+                $(".modal-footer").append("<a class='waves-effect waves-light btn-small' data-id='" + data._id + "' id='saveNote'>Save Note</a>");
+                // If there's a note in the article
+                if (data.note) {
+                    // Place the body of the note in the body textarea
+                    $("#notes").val(data.note.body);
+                }
+            });
+    }
+
+    // When you click the savenote button
+    function saveNote() {
+        // Grab the id associated with the article from the submit button
+        var thisId = $(this).attr("data-id");
+        console.log(thisId)
+
+        var noteData;
+        var newNote = $("#notebodyinput")
+          .val()
+          .trim();
+          console.log(newNote)
+        // If we actually have data typed into the note input field, format it
+        // and post it to the "/api/notes" route and send the formatted noteData as well
+        if (newNote) {
+          noteData = { body: newNote };
+          $.post("/articles/saved/" + thisId, noteData).then(function() {
+            // When complete, close the modal
+            console.log("New Note Data Sent")
+          });
+        }
+
+        $("#notebodyinput").val("");
+        
+    };
+
+    //End of document.ready()
+});
 
 
