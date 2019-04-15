@@ -6,7 +6,8 @@ $(document).ready(function () {
 
     $(document).on("click", ".delete", articleDelete);
     $(document).on("click", ".addNote", articleNotes);
-    $(document).on("click", "#saveNote", saveNote);
+    $(document).on("click", ".saveNote", saveNote);
+    $(document).on("click", ".deleteNote", deleteNote);
 
     function initPage() {
         // Grab the articles as a json
@@ -72,7 +73,7 @@ $(document).ready(function () {
     function articleNotes() {
         // Empty the notes from the note section
         $("#notes").empty();
-        // Save the id from the p tag
+        
         var articleToSave = $(this)
             .parents(".card")
             .data();
@@ -86,12 +87,22 @@ $(document).ready(function () {
             .then(function (data) {
                 // var articleId = data._id
                 console.log(data);
-                $("#articleId").append(data.title);
-                $(".modal-footer").append("<a class='waves-effect waves-light btn-small' data-id='" + data._id + "' id='saveNote'>Save Note</a>");
+                $("#articleId").text(data.title);
+                $(".modal-footer").html("<a class='waves-effect waves-light btn-small modal-close saveNote' data-id='" + data._id + "'>Save Note</a>");
                 // If there's a note in the article
+                console.log(data.note)
+                
                 if (data.note) {
-                    // Place the body of the note in the body textarea
-                    $("#notes").val(data.note.body);
+                    for (var i = 0; i < data.note.length; i++) {
+                        // Constructs an li element to contain our noteText and a delete button
+                        currentNote = $("<li>")
+                          .text(data.note[i].body)
+                          .append($("<a href='#!' class='waves-effect waves-green btn-small deleteNote' data-id='" + data.note[i]._id + "'>Delete</a>"));
+                        
+                        // Place the body of the note in the body textarea
+                        $("#notes").append(currentNote);
+                      }
+                    
                 }
             });
     }
@@ -102,7 +113,7 @@ $(document).ready(function () {
         var thisId = $(this).attr("data-id");
         console.log(thisId)
 
-        var noteData;
+        var noteData = {};
         var newNote = $("#notebodyinput")
           .val()
           .trim();
@@ -110,15 +121,32 @@ $(document).ready(function () {
         // If we actually have data typed into the note input field, format it
         // and post it to the "/api/notes" route and send the formatted noteData as well
         if (newNote) {
-          noteData = { body: newNote };
-          $.post("/articles/saved/" + thisId, noteData).then(function() {
-            // When complete, close the modal
-            console.log("New Note Data Sent")
+          noteData.body = newNote
+          $.ajax({
+            method: "POST",
+            url: "/notes/" + thisId,
+            data: noteData
+        }).then(function(result) {
+            
+            console.log(result)
           });
         }
 
         $("#notebodyinput").val("");
         
+    };
+
+    function deleteNote() {
+        // Grab the id associated with the article from the submit button
+        var thisId = $(this).attr("data-id");
+        console.log(thisId)
+
+        $.ajax({
+            url: "/notes/" + thisId,
+            method: "DELETE"
+          }).then(function() {
+            articleNotes()
+          });
     };
 
     //End of document.ready()
