@@ -7,6 +7,7 @@ $(document).ready(function () {
     function initPage() {
         // Grab the articles as a json
         $.getJSON("/articles", function (data) {
+            $('#articles').empty()
             // For each one
             for (var i = 0; i < data.length; i++) {
                 if (data[i].saved === false) {
