@@ -97,7 +97,7 @@ $(document).ready(function () {
                         // Constructs an li element to contain our noteText and a delete button
                         currentNote = $("<li>")
                           .text(data.note[i].body)
-                          .append($("<a href='#!' class='waves-effect waves-green btn-small deleteNote' data-id='" + data.note[i]._id + "'>Delete</a>"));
+                          .append($("<a href='#!' class='waves-effect waves-green btn-small deleteNote modal-close' data-id='" + data.note[i]._id + "'>Delete</a>"));
                         
                         // Place the body of the note in the body textarea
                         $("#notes").append(currentNote);
